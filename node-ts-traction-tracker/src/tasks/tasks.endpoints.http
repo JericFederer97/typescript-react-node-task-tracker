@@ -1,0 +1,32 @@
+### FETCH ALL TASKS
+GET HTTP://localhost:3200/tasks
+Content-Type: application/json
+
+### CREATE A TASK
+POST HTTP://localhost:3200/tasks
+Content-Type: application/json
+
+{
+    "title": "title_1",
+    "date": "2024",
+    "description": "desc_1",
+    "priority": "high",
+    "status": "todo"
+}
+
+### UPDATE A TASK
+PUT HTTP://localhost:3200/tasks
+Content-Type: application/json
+
+{
+    "id": "3ff118fe-5b73-4354-8a6a-982b67a0cb0c",
+    "status": "completed"
+}
+
+### DELETE A TASK
+DELETE HTTP://localhost:3200/tasks
+Content-Type: application/json
+
+{
+    "id": "0b8474dc-8646-4744-ab0f-8c22efb9556e"
+}
