@@ -7,11 +7,11 @@ POST HTTP://localhost:3200/tasks
 Content-Type: application/json
 
 {
-    "title": "title_1",
-    "date": "2024",
-    "description": "desc_1",
-    "priority": "high",
-    "status": "todo"
+    "title": "title_3",
+    "date": "2024/04/11",
+    "description": "desc_3",
+    "priority": "normal",
+    "status": "inProgress"
 }
 
 ### UPDATE A TASK
@@ -28,5 +28,5 @@ DELETE HTTP://localhost:3200/tasks
 Content-Type: application/json
 
 {
-    "id": "0b8474dc-8646-4744-ab0f-8c22efb9556e"
+    "id": "8b7ac3a3-8692-40d4-a10d-8d4e8ff32714"
 }
