@@ -5,6 +5,8 @@ import { ThemeProvider, CssBaseline } from '@mui/material';
 
 import { customTheme } from './theme/customTheme';
 import { Dashboard } from './pages/dashboard/dashboard';
+import ComposeContext from './context/Compose.context';
+import { rootContext } from './context/root.context';
 
 // * Create a query client
 const queryClient = new QueryClient();
@@ -12,11 +14,14 @@ const queryClient = new QueryClient();
 const App: FC = (): ReactElement => {
     return (
         <QueryClientProvider client={queryClient}>
-            <ThemeProvider theme={customTheme}>
-                <CssBaseline />
-                {/* <h1>Hello Composer/Pianist/Programmer Jeric</h1> */}
-                <Dashboard />
-            </ThemeProvider>
+            {/* Context is available in all these children components nested inside ComposeContext. */}
+            <ComposeContext components={rootContext}>
+                <ThemeProvider theme={customTheme}>
+                    <CssBaseline />
+                    {/* <h1>Hello Composer/Pianist/Programmer Jeric</h1> */}
+                    <Dashboard />
+                </ThemeProvider>
+            </ComposeContext>
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
     );

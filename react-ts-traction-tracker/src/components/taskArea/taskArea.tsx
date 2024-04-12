@@ -1,14 +1,17 @@
-import React, { FC, ReactElement } from 'react';
+import React, { FC, ReactElement, useContext, useEffect } from 'react';
 import { Grid, Box, Alert, LinearProgress } from '@mui/material';
 import { format } from 'date-fns';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { TaskCounter } from '../taskCounter/taskCounter';
 import { Task } from '../task/task';
-import { sendApiRequest } from '../../helpers/sendApiRequest';
 import { ITaskApi } from './interfaces/iTaskApi';
 import { Status } from '../createTaskForm/enums/Status';
 import { IUpdateTask } from '../createTaskForm/interfaces/IUpdateTask';
+import { TaskStatusChangedContext } from '../../context';
+
+import { sendApiRequest } from '../../helpers/sendApiRequest';
+import { countTasks } from './helpers/countTasks';
 
 export const TaskArea: FC = (): ReactElement => {
 
@@ -36,6 +39,30 @@ export const TaskArea: FC = (): ReactElement => {
         }
     )
 
+    // * useContext
+    const tasksUpdatedContext = useContext(
+        TaskStatusChangedContext,
+    );
+
+    // * useEffect
+    // * These 2 useEffects will manage the current states inside the task area.
+    // * Will refetch data from DB everytime there is a change on the Status of a task.
+    useEffect(
+        () => {
+            refetch();
+        },
+        [tasksUpdatedContext.updated]
+    )
+
+    useEffect(
+        () => {
+            if (updateTaskMutation.isSuccess) {
+                tasksUpdatedContext.toggle();
+            }
+        },
+        [updateTaskMutation.isSuccess]
+    )
+
     // * Status change handler
     function onStatusChangeHandler(
         e: React.ChangeEvent<HTMLInputElement>,
@@ -44,6 +71,17 @@ export const TaskArea: FC = (): ReactElement => {
         updateTaskMutation.mutate({
             id,
             status: e.target.checked ? Status.inProgress : Status.todo
+        })
+    }
+
+    // * Mark complete handler
+    function markCompleteHandler(
+        e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLAnchorElement>,
+        id: string,
+    ) {
+        updateTaskMutation.mutate({
+            id,
+            status: Status.completed
         })
     }
 
@@ -67,9 +105,15 @@ export const TaskArea: FC = (): ReactElement => {
                     xs={12}
                     mb={8}
                 >
-                    <TaskCounter />
-                    <TaskCounter />
-                    <TaskCounter />
+                    <TaskCounter status={Status.todo} count={
+                        data ? countTasks(data, Status.todo) : undefined
+                    }/>
+                    <TaskCounter status={Status.inProgress} count={
+                        data ? countTasks(data, Status.inProgress) : undefined
+                    }/>
+                    <TaskCounter status={Status.completed} count={
+                        data ? countTasks(data, Status.completed) : undefined
+                    }/>
                 </Grid>
                 <Grid 
                     item
@@ -110,6 +154,7 @@ export const TaskArea: FC = (): ReactElement => {
                                         priority={each.priority}
                                         status={each.status}
                                         onStatusChange={onStatusChangeHandler}
+                                        onClick={markCompleteHandler}
                                     />) 
                                 : (false)
                         })
